@@ -7,7 +7,7 @@
 // https://medium.com/@SunnyB/how-to-convert-es6-into-es5-using-babel-1b533d31a169
 
 import Display from "./classes/Display.js" // Default export -> no {}
-import { Input } from "./classes/Input.js" // Named export -> must have {}
+import Input from "./classes/Input.js" // Named export -> must have {}
 import Game from "./classes/Game.js"
 
 // const game = require('./text-rpg-engine');

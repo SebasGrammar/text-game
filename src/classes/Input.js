@@ -1,4 +1,4 @@
-export class Input {
+export default class Input {
 
     constructor(disabled = false, value = '', elementId = 'input') {
         this.disabled = disabled;

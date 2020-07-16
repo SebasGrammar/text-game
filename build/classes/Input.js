@@ -8,7 +8,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var Input = exports.Input = function () {
+var Input = function () {
     function Input() {
         var disabled = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
         var value = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
@@ -44,3 +44,5 @@ var Input = exports.Input = function () {
 
     return Input;
 }();
+
+exports.default = Input;

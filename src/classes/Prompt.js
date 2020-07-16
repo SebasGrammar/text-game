@@ -11,3 +11,4 @@ export default class Prompt {
         // Any prerequisite items needed to do the prompt?
         this.requirements = requirements;
     }
+}
