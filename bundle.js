@@ -195,14 +195,8 @@ var Game = function () {
         var foundPrompt = false;
 
         currRoom.prompts.forEach(function (prompt) {
-            //console.log(prompt.keywords)
-            console.log(message)
           if (foundPrompt === false) {
-            // var matchingPromptResults = prompt.matchKeywords(message, _this.Player.inventory.items);
-            let matchingPromptResults = prompt.keywords.filter(word => word.includes(message))
-
-            console.log("YOU")
-            console.log(matchingPromptResults)
+            var matchingPromptResults = prompt.matchKeywords(message, _this.Player.inventory.items);
 
             // If we get a matching result back
             if (matchingPromptResults !== null) {
@@ -567,28 +561,87 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var Prompt = function Prompt() {
-    var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
-    var keywords = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
-    var results = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-    var requirements = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : [];
+var Prompt = function () {
+    function Prompt() {
+        var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+        var keywords = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
+        var results = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+        var requirements = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : [];
 
-    _classCallCheck(this, Prompt);
+        _classCallCheck(this, Prompt);
 
-    this.name = name;
-    // Keywords that can trigger the prompt (make all lower-case by default)
-    this.keywords = keywords.map(function (v) {
-        return v.toLowerCase();
-    });
-    // Results that occur when this prompt is successfully triggered;
-    // the result keys comprise of “successText” (required), "failText" (optional),
-    // “itemsRequired” (optional), and “roomToEnter” (optional)
-    this.results = results;
-    // Any prerequisite items needed to do the prompt?
-    this.requirements = requirements;
-};
+        this.name = name;
+        // Keywords that can trigger the prompt (make all lower-case by default)
+        this.keywords = keywords.map(function (v) {
+            return v.toLowerCase();
+        });
+        // Results that occur when this prompt is successfully triggered;
+        // the result keys comprise of “successText” (required), "failText" (optional),
+        // “itemsRequired” (optional), and “roomToEnter” (optional)
+        this.results = results;
+        // Any prerequisite items needed to do the prompt?
+        this.requirements = requirements;
+    }
+
+    _createClass(Prompt, [{
+        key: 'matchKeywords',
+        value: function matchKeywords(message) {
+            var items = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
+            var foundKeyword = false;
+            var missingRequirements = []; // If we have any item requirements
+
+            if (this.requirements.length > 0) {
+                // Check all the requirements against the items passed
+                this.requirements.forEach(function (requirement) {
+                    var foundRequirement = false;
+                    items.forEach(function (item) {
+                        if (item === requirement) {
+                            foundRequirement = true;
+                        }
+                    }); // If a requirement isn't found add that a list
+
+                    if (!foundRequirement) {
+                        missingRequirements.push(requirement);
+                    }
+                });
+            } // Once we check to see if the player's missing any items,
+            // parse the input for matching keywords to the prompt
+
+
+            this.keywords.forEach(function (keyword) {
+                if (message.includes(keyword.toLowerCase())) {
+                    foundKeyword = true;
+                }
+            }); // If any keywords have been matched from the user input
+
+            if (foundKeyword) {
+                // If there are any missing item requirements
+                if (missingRequirements.length > 0) {
+                    // Prompt fails; return missing items and failText
+                    return {
+                        'fail': {
+                            'missing': missingRequirements,
+                            'failText': this.results.failText
+                        }
+                    };
+                } // Prompt succeeds; return results of the prompt
+
+
+                return {
+                    'success': this.results
+                };
+            }
+
+            return null;
+        }
+    }]);
+
+    return Prompt;
+}();
 
 exports.default = Prompt;
 },{}],8:[function(require,module,exports){
@@ -629,14 +682,13 @@ var endRoom = game.addRoom('SecondRoom', 'You did it! You won!');
 // Add required item to room
 endRoom.requirements.push('accessKey');
 
-// Add room prompts
-startRoom.addPrompt('look', ['look room', 'look at room', 'search room', 'examine room', 'look in'], {
-  'successText': 'You see a room with a door to the right and a statue in the middle.'
-});
+// Add required item to room
+endRoom.requirements.push('accessKey');
 
+// Add room prompts
 startRoom.addPrompt(
 // name of prompt (required)
-'Go rightt',
+'go right',
 // keywords that will activate prompt (required)
 ['go right', 'move right', 'open right', 'enter right', 'door right', 'right door'],
 // results of prompt
@@ -648,10 +700,31 @@ startRoom.addPrompt(
   // room to enter as result of prompt (optional)
   'roomToEnter': 'SecondRoom',
   // items added to inventory after successful prompt result (optional)
-  'itemsGiven': 'trophy'
+  'itemsGiven': ['trophy']
 },
-// required items to successfully do prompt (optional)
+// required items to successfully do prompt
 ['accessKey']);
+
+startRoom.addPrompt('look', ['look room', 'look at room', 'search room', 'examine room', 'look in'], {
+  'successText': 'You see a room with a door to the right and a statue in the middle.'
+});
+
+startRoom.addPrompt('get statue', ['get statue', 'pick up statue', 'take statue', 'pick statue'], {
+  'successText': "You pick up the statue. It feels heavy in your hands, and there's something hanging off\n                    the bottom.",
+  'itemsGiven': ['statue']
+});
+
+startRoom.addPrompt('rotate statue', ['rotate statue', 'rotate the statue'], {
+  'successText': 'You take the note from the bottom of the statue.',
+  'failText': 'You have no statue to look at!',
+  'itemsGiven': ['note']
+}, ['statue']);
+
+startRoom.addPrompt('look', ['look at note', 'examine note', 'take note', 'get note', 'check note', 'read note', 'look note'], {
+  'successText': 'You look at the note and find an access code: "14052."',
+  'failText': 'You have no note to look at!',
+  'itemsGiven': ['accessKey']
+}, ['statue', 'note']);
 
 game.init();
 

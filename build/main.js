@@ -35,14 +35,13 @@ var endRoom = game.addRoom('SecondRoom', 'You did it! You won!');
 // Add required item to room
 endRoom.requirements.push('accessKey');
 
-// Add room prompts
-startRoom.addPrompt('look', ['look room', 'look at room', 'search room', 'examine room', 'look in'], {
-  'successText': 'You see a room with a door to the right and a statue in the middle.'
-});
+// Add required item to room
+endRoom.requirements.push('accessKey');
 
+// Add room prompts
 startRoom.addPrompt(
 // name of prompt (required)
-'Go rightt',
+'go right',
 // keywords that will activate prompt (required)
 ['go right', 'move right', 'open right', 'enter right', 'door right', 'right door'],
 // results of prompt
@@ -54,10 +53,31 @@ startRoom.addPrompt(
   // room to enter as result of prompt (optional)
   'roomToEnter': 'SecondRoom',
   // items added to inventory after successful prompt result (optional)
-  'itemsGiven': 'trophy'
+  'itemsGiven': ['trophy']
 },
-// required items to successfully do prompt (optional)
+// required items to successfully do prompt
 ['accessKey']);
+
+startRoom.addPrompt('look', ['look room', 'look at room', 'search room', 'examine room', 'look in'], {
+  'successText': 'You see a room with a door to the right and a statue in the middle.'
+});
+
+startRoom.addPrompt('get statue', ['get statue', 'pick up statue', 'take statue', 'pick statue'], {
+  'successText': "You pick up the statue. It feels heavy in your hands, and there's something hanging off\n                    the bottom.",
+  'itemsGiven': ['statue']
+});
+
+startRoom.addPrompt('rotate statue', ['rotate statue', 'rotate the statue'], {
+  'successText': 'You take the note from the bottom of the statue.',
+  'failText': 'You have no statue to look at!',
+  'itemsGiven': ['note']
+}, ['statue']);
+
+startRoom.addPrompt('look', ['look at note', 'examine note', 'take note', 'get note', 'check note', 'read note', 'look note'], {
+  'successText': 'You look at the note and find an access code: "14052."',
+  'failText': 'You have no note to look at!',
+  'itemsGiven': ['accessKey']
+}, ['statue', 'note']);
 
 game.init();
 
