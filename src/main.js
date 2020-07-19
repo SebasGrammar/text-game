@@ -22,66 +22,107 @@ const endRoom = game.addRoom('SecondRoom', 'You did it! You won!');
 endRoom.requirements.push('accessKey');
 
 // Add required item to room
-endRoom.requirements.push('accessKey');
+// endRoom.requirements.push('accessKey');
 
 // Add room prompts
-startRoom.addPrompt(
-  // name of prompt (required)
-  'go right',
-  // keywords that will activate prompt (required)
-  ['go right', 'move right', 'open right', 'enter right', 'door right', 'right door'],
-  // results of prompt
-  {
-    // successful prompt result text (required)
-    'successText': 'You enter in the access code "14052" and successfully open the door.',
-    // failed prompt result text (optional)
-    'failText': 'The door is locked with an access code!',
-    // room to enter as result of prompt (optional)
-    'roomToEnter': 'SecondRoom',
-    // items added to inventory after successful prompt result (optional)
-    'itemsGiven': ['trophy']
-  },
-  // required items to successfully do prompt
-  ['accessKey']
-);
+// startRoom.addPrompt(
+//   // name of prompt (required)
+//   'go right',
+//   // keywords that will activate prompt (required)
+//   ['go right', 'move right', 'open right', 'enter right', 'door right', 'right door'],
+//   // results of prompt
+//   {
+//     // successful prompt result text (required)
+//     'successText': 'You enter in the access code "14052" and successfully open the door.',
+//     // failed prompt result text (optional)
+//     'failText': 'The door is locked with an access code!',
+//     // room to enter as result of prompt (optional)
+//     'roomToEnter': 'SecondRoom',
+//     // items added to inventory after successful prompt result (optional)
+//     'itemsGiven': ['trophy']
+//   },
+//   // required items to successfully do prompt
+//   ['accessKey']
+// );
 
-startRoom.addPrompt(
-  'look',
-  ['look room', 'look at room', 'search room', 'examine room', 'look in'],
-  {
-    'successText': 'You see a room with a door to the right and a statue in the middle.'
-  }
-);
+// startRoom.addPrompt(
+//   'look',
+//   ['look room', 'look at room', 'search room', 'examine room', 'look in'],
+//   {
+//     'successText': 'You see a room with a door to the right and a statue in the middle.'
+//   }
+// );
 
-startRoom.addPrompt('get statue', ['get statue', 'pick up statue', 'take statue', 'pick statue'],
-  {
-    'successText': `You pick up the statue. It feels heavy in your hands, and there's something hanging off
-                    the bottom.`,
-    'itemsGiven': ['statue']
-  }
-);
+// startRoom.addPrompt('get statue', ['get statue', 'pick up statue', 'take statue', 'pick statue'],
+//   {
+//     'successText': `You pick up the statue. It feels heavy in your hands, and there's something hanging off
+//                     the bottom.`,
+//     'itemsGiven': ['statue']
+//   }
+// );
 
-startRoom.addPrompt('rotate statue', ['rotate statue', 'rotate the statue'],
-  {
-    'successText': 'You take the note from the bottom of the statue.',
-    'failText': 'You have no statue to look at!',
-    'itemsGiven': ['note']
-  },
-  ['statue']
-);
+// startRoom.addPrompt('rotate statue', ['rotate statue', 'rotate the statue'],
+//   {
+//     'successText': 'You take the note from the bottom of the statue.',
+//     'failText': 'You have no statue to look at!',
+//     'itemsGiven': ['note']
+//   },
+//   ['statue']
+// );
 
-startRoom.addPrompt(
-  'look',
-  ['look at note', 'examine note', 'take note', 'get note', 'check note', 'read note', 'look note'],
-  {
-    'successText': 'You look at the note and find an access code: "14052."',
-    'failText': 'You have no note to look at!',
-    'itemsGiven': ['accessKey']
-  },
-  ['statue', 'note']
-);
+// startRoom.addPrompt(
+//   'look',
+//   ['look at note', 'examine note', 'take note', 'get note', 'check note', 'read note', 'look note'],
+//   {
+//     'successText': 'You look at the note and find an access code: "14052."',
+//     'failText': 'You have no note to look at!',
+//     'itemsGiven': ['accessKey']
+//   },
+//   ['statue', 'note']
+// );
+
+// async function prompt() {
+//   let file = await fetch("./prompts.json")
+//       .then(res => res.json());
+
+//   let {rules} = file;
+
+//   for (let rule of rules) {
+//       console.log(rule)
+//       startRoom.addPrompt(...rule)
+//   }
+
+  
+//       //.then(out => console.log(out))
+
+  
+
+//   console.log(file)
+//   //console.log(file)
+//   //let results = await fetch("./prompts.json").then((req, res) => res.json()).then(result => console.log(result))
+//   game.init();
+
+
+// }
+
+let promise = fetch("./prompts.json")
+    .then(res => res.json())
+    .then(res => {
+        let rules = res.rules
+        console.log(rules)
+
+        for (let rule of rules) {
+            console.log(rule)
+            startRoom.addPrompt(...rule)
+        }
+    })
+    .catch(error => console.log(error))
 
 game.init();
+
+prompt()
+
+
 
 // Send user input to our game (on pressing 'Enter' in the form)
 document.getElementById('input').addEventListener('keypress', function (event) {

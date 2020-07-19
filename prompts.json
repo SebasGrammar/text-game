@@ -1,0 +1,94 @@
+{
+    "rules": [
+        [
+            "go right",
+            [
+                "go right",
+                "move right",
+                "open right",
+                "enter right",
+                "door right",
+                "right door"
+            ],
+            {
+                "successText": "You enter in the access code '14052' and successfully open the door.",
+                "failText": "The door is locked with an access code!",
+                "roomToEnter": "SecondRoom",
+                "itemsGiven": [
+                    "trophy"
+                ]
+            },
+            [
+                "accessKey"
+            ]
+        ],
+        [
+            "look",
+            [
+                "look room",
+                "look at room",
+                "search room",
+                "examine room",
+                "look in"
+            ],
+            {
+                "successText": "You see a room with a door to the right and a statue in the middle."
+            }
+        ],
+        [
+            "rotate statue",
+            [
+                "rotate statue",
+                "rotate the statue"
+            ],
+            {
+                "successText": "You take the note from the bottom of the statue.",
+                "failText": "You have no statue to look at!",
+                "itemsGiven": [
+                    "note"
+                ]
+            },
+            [
+                "statue"
+            ]
+        ],
+        [
+            "get statue",
+            [
+                "get statue",
+                "pick up statue",
+                "take statue",
+                "pick statue"
+            ],
+            {
+                "successText": "You pick up the statue. It feels heavy in your hands, and there is something hanging off the bottom.",
+                "itemsGiven": [
+                    "statue"
+                ]
+            }
+        ],
+        [
+            "look",
+            [
+                "look at note",
+                "examine note",
+                "take note",
+                "get note",
+                "check note",
+                "read note",
+                "look note"
+            ],
+            {
+                "successText": "You look at the note and find an access code: '14052'.",
+                "failText": "You have no note to look at!",
+                "itemsGiven": [
+                    "accessKey"
+                ]
+            },
+            [
+                "statue",
+                "note"
+            ]
+        ]
+    ]
+}
